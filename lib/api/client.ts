@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { ApiError, ErrorResponse, ValidationErrorResponse } from './types';
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 // const API_BASE_URL = 'https://backend-web-production-ed12.up.railway.app';
 
 // Create axios instance
