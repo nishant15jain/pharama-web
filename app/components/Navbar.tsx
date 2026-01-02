@@ -26,9 +26,9 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-24 h-24 group-hover:scale-105 transition-transform">
+            <div className="relative w-16 h-16 group-hover:scale-105 transition-transform">
               <Image
-                src="/products/logo.png"
+                src="/products/logo.jpeg"
                 alt="Dermagreat Logo"
                 fill
                 className="object-contain"

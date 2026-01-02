@@ -42,7 +42,7 @@ export default function Home() {
   ];
 
   const stats = [
-    { value: "10+", label: "Years of Excellence" },
+    { value: "4+", label: "Years of Excellence" },
     { value: "50+", label: "Products" },
     { value: "Pan India", label: "Coverage" },
     { value: "1M+", label: "Patients Helped" },
