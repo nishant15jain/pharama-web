@@ -1,7 +1,21 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
+import ProductCarousel from './components/ProductCarousel';
+import { useProducts } from '@/lib/hooks';
 
 export default function Home() {
+  const { data: products, isLoading, error } = useProducts();
+
+  // Transform products for carousel format
+  const carouselProducts = products?.map(product => ({
+    id: product.id,
+    name: product.name,
+    description: product.description || '',
+    imageSrc: product.imageUrl || '/products/placeholder.png',
+  })) || [];
+
   const features = [
     {
       icon: (
@@ -145,6 +159,80 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Product Carousel Section */}
+      <section className="py-16 sm:py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pattern-bg opacity-30" />
+        <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+              Our Products
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+              Featured <span className="gradient-text">Products</span>
+            </h2>
+            <p className="text-lg text-muted max-w-2xl mx-auto">
+              Discover our range of premium dermatology products trusted by thousands
+            </p>
+          </div>
+          
+          {/* Loading State */}
+          {isLoading && (
+            <div className="flex justify-center items-center py-16">
+              <svg className="animate-spin h-12 w-12 text-primary" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
+                <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <p className="text-red-500 font-medium">Failed to load products</p>
+              <p className="text-muted text-sm mt-1">{error.message}</p>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!isLoading && !error && carouselProducts.length === 0 && (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+              <p className="font-medium text-lg">No products available yet</p>
+              <p className="text-muted text-sm mt-1">Check back soon for our premium dermatology products</p>
+            </div>
+          )}
+
+          {/* Products Carousel */}
+          {!isLoading && !error && carouselProducts.length > 0 && (
+            <ProductCarousel products={carouselProducts} />
+          )}
+
+          {/* View All Link */}
+          {!isLoading && !error && carouselProducts.length > 0 && (
+            <div className="text-center mt-10">
+              <Link
+                href="/products"
+                className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
+              >
+                View All Products
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

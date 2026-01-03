@@ -1,18 +1,10 @@
 'use client';
 
-import ProductCarousel from '../components/ProductCarousel';
+import Image from 'next/image';
 import { useProducts } from '@/lib/hooks';
 
 export default function ProductsPage() {
   const { data: products, isLoading, error } = useProducts();
-
-  // Transform products for carousel format
-  const carouselProducts = products?.map(product => ({
-    id: product.id,
-    name: product.name,
-    description: product.description || '',
-    imageSrc: product.imageUrl || '/products/placeholder.png',
-  })) || [];
 
   return (
     <div className="min-h-screen">
@@ -36,18 +28,9 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* Featured Product Carousel */}
-      <section className="py-8 sm:py-12 overflow-hidden">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
-              Featured Products
-            </h2>
-            <p className="text-muted max-w-lg mx-auto">
-              Explore our bestselling dermatology solutions trusted by thousands
-            </p>
-          </div>
-          
+      {/* Products Grid Section */}
+      <section className="py-8 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Loading State */}
           {isLoading && (
             <div className="flex justify-center items-center py-16">
@@ -72,7 +55,7 @@ export default function ProductsPage() {
           )}
 
           {/* Empty State */}
-          {!isLoading && !error && carouselProducts.length === 0 && (
+          {!isLoading && !error && products?.length === 0 && (
             <div className="text-center py-16">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
                 <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,9 +67,55 @@ export default function ProductsPage() {
             </div>
           )}
 
-          {/* Products Carousel */}
-          {!isLoading && !error && carouselProducts.length > 0 && (
-            <ProductCarousel products={carouselProducts} />
+          {/* Products Grid - Single column on mobile, 2 columns on tablet, 3 on desktop */}
+          {!isLoading && !error && products && products.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {products.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="group bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
+                  style={{ animationDelay: `${index * 100}ms`, opacity: 0, animationFillMode: 'forwards' }}
+                >
+                  {/* Image Container */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
+                    <Image
+                      src={product.imageUrl || '/products/placeholder.png'}
+                      alt={product.name}
+                      fill
+                      className="object-contain p-6 transition-all duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                    {/* Subtle gradient overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Premium badge */}
+                    <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-primary shadow-lg">
+                      Premium
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6">
+                    <h3 className="font-bold text-xl text-gray-900 mb-2 group-hover:text-primary transition-colors duration-300">
+                      {product.name}
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4">
+                      {product.description || 'High-quality dermatology product for skin and hair care.'}
+                    </p>
+                    
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1.5 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20">
+                        Dermatologist Tested
+                      </span>
+                      <span className="px-3 py-1.5 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-600 border border-cyan-500/20">
+                        Clinically Proven
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </section>
